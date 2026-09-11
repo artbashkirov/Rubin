@@ -1,10 +1,7 @@
 (() => {
   const CFG = window.HERO_SEQ;
-  const STAGE_W = CFG.stageWidth;
-  const STAGE_H = CFG.stageHeight;
 
   const pin = document.querySelector(".hero-pin");
-  const stage = document.querySelector(".stage");
   const canvas = document.querySelector(".hero-canvas");
   const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
   const status = document.querySelector(".hero-status");
@@ -12,11 +9,6 @@
   let viewW = 0;
   let viewH = 0;
   let dpr = 1;
-
-  function fitUI() {
-    const scale = Math.min(window.innerWidth / STAGE_W, window.innerHeight / STAGE_H, 1);
-    stage.style.transform = `scale(${scale})`;
-  }
 
   function fitCanvas() {
     viewW = pin.clientWidth;
@@ -31,14 +23,9 @@
     ctx.imageSmoothingQuality = "high";
   }
 
-  function fitAll() {
-    fitUI();
-    fitCanvas();
-  }
-
-  fitAll();
+  fitCanvas();
   window.addEventListener("resize", () => {
-    fitAll();
+    fitCanvas();
     if (window.__heroRedraw) window.__heroRedraw();
   });
 
