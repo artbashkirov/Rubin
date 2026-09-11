@@ -22,11 +22,11 @@ window.HERO_SEQ = {
   // Короткая пауза на кадре 65, потом отпускаем pin
   endHold: 0.08,
 
-  // Старт скролла = бывший финал; без lastHiRes-оверлея (ghost)
-  firstHiRes: "../assets/hero-seq/last.webp",
+  // Без hi-res оверлеев при reverse — иначе ghost на соседних кадрах
+  firstHiRes: null,
   lastHiRes: null,
-  firstHold: 0.06,
-  firstFade: 0.12,
+  firstHold: 0,
+  firstFade: 0,
   lastFade: 1,
   lastHold: 1,
 
