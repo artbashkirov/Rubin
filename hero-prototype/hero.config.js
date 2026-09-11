@@ -22,13 +22,16 @@ window.HERO_SEQ = {
   // Короткая пауза на кадре 65, потом отпускаем pin
   endHold: 0.08,
 
-  // Только острый старт; финал = frame-0065 из секвенции (без оверлея — иначе ghost)
-  firstHiRes: "../assets/landing/Frame 16@2x.png",
+  // Старт скролла = бывший финал; без lastHiRes-оверлея (ghost)
+  firstHiRes: "../assets/hero-seq/last.webp",
   lastHiRes: null,
   firstHold: 0.06,
   firstFade: 0.12,
   lastFade: 1,
   lastHold: 1,
+
+  // true = кадры задом наперёд (тест для клиента)
+  reverse: true,
 
   video: "../assets/landing/hero-v1.mp4",
   videoFallbacks: [],

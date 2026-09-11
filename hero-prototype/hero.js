@@ -186,7 +186,8 @@
     }
 
     function frameIndex(p) {
-      return Math.round(animProgress(p) * (count - 1));
+      const forward = Math.round(animProgress(p) * (count - 1));
+      return CFG.reverse ? count - 1 - forward : forward;
     }
 
     let progress = 0;
