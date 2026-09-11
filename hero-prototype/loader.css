@@ -1,0 +1,72 @@
+/* —— Site loader (Hyper-style) —— */
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2a060c;
+  color: #fff;
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.site-loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.site-loader__star {
+  width: 48px;
+  height: 74px;
+  display: block;
+  overflow: visible;
+}
+
+.site-loader__star .star-pair {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: star-pair-pulse 1.95s ease-in-out infinite;
+}
+
+.site-loader__star .star-pair[data-pair="0"] {
+  animation-delay: 0s;
+}
+.site-loader__star .star-pair[data-pair="1"] {
+  animation-delay: 0.65s;
+}
+.site-loader__star .star-pair[data-pair="2"] {
+  animation-delay: 1.3s;
+}
+
+@keyframes star-pair-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.16);
+  }
+  55% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-loader__star .star-pair {
+    animation: none;
+  }
+}
+
+/* Контент скрыт до staggered reveal */
+body.is-booting .hero-canvas,
+body.is-booting .stage__scrim,
+body.is-booting .nav__logo,
+body.is-booting .nav__mid a,
+body.is-booting .nav__cta,
+body.is-booting .copy h1,
+body.is-booting .copy p,
+body.is-booting .after {
+  opacity: 0;
+}

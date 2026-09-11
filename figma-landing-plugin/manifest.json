@@ -1,0 +1,23 @@
+{
+  "name": "RUBIN Landing Generator",
+  "id": "rubin-landing-generator",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "menu": [
+    {
+      "name": "Generate Landings (full)",
+      "command": "landings"
+    }
+  ],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://wsrv.nl",
+      "https://images.weserv.nl",
+      "https://sana-labs.b-cdn.net",
+      "https://sanalabs.com"
+    ],
+    "reasoning": "Loads reference site images (WebP/AVIF/SVG converted to JPEG/PNG via wsrv.nl) for pixel-perfect clone artboards."
+  }
+}

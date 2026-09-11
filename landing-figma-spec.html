@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RUBIN Landing — 4 distinct vibes (Figma sync)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Serif&family=Manrope:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F3F1EE;
+      --surface: #FFFFFF;
+      --text: #1C1916;
+      --muted: #6F6860;
+      --accent: #B84E35;
+      --gray: #E8C4B0;
+      --gray-dark: #1C1916;
+      --line: #E0DBD5;
+      --ph1: #E8C4B0;
+      --ph2: #C5D4C0;
+      --ph3: #E5D9C5;
+      --ph4: #D4B5A0;
+      --ph5: #E8D0C8;
+      --ph-text: #5C4A3E;
+      --max: 1440px;
+      --pad: 120px;
+      --pad-x: 120px;
+      --pad-y: 96px;
+      --gap: 24px;
+      --card-gap: 24px;
+      --content-max: 1200px;
+      --nav-h: 56px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+      background: #E5E5E5;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .page.vibe-a { font-family: "DM Sans", sans-serif; }
+    .page.vibe-a h1, .page.vibe-a h2, .page.vibe-a h3 { font-family: "Space Grotesk", sans-serif; }
+    /* A ← 11x.ai (H1 укорочен с 152 под длинный манифест) */
+    .page.vibe-a {
+      --h1: 112px; --h1-lh: 1; --h1-ls: -0.03em;
+      --h2: 56px; --h2-lh: 1; --h2-ls: -0.04em;
+      --h3: 32px; --lead: 18px; --lead-lh: 26px;
+      --body: 16px; --nav: 14px; --btn: 16px; --metric: 48px; --cap: 13px;
+      --pad-x: 96px; --pad-y: 140px; --gap: 32px; --card-gap: 24px;
+      --content-max: 1248px; --nav-h: 72px;
+    }
+    .page.vibe-b { font-family: "DM Sans", sans-serif; }
+    .page.vibe-b h1, .page.vibe-b h2 { font-family: "Instrument Serif", "Times New Roman", serif; font-weight: 400; }
+    /* B ← hyperfoundation.org / Hyperliquid */
+    .page.vibe-b {
+      --h1: 90px; --h1-lh: 1; --h1-ls: 0;
+      --h2: 56px; --h2-lh: 1.07; --h2-ls: 0;
+      --h3: 32px; --lead: 28px; --lead-lh: 42px;
+      --body: 16px; --nav: 16px; --btn: 16px; --metric: 35px; --cap: 14px;
+      --pad-x: 152px; --pad-y: 160px; --gap: 48px; --card-gap: 40px;
+      --content-max: 1136px; --nav-h: 64px;
+    }
+    .page.vibe-c { font-family: "Source Sans 3", sans-serif; }
+    .page.vibe-c h1, .page.vibe-c h2 { font-family: "Fraunces", Georgia, serif; font-weight: 400; }
+    /* C ← basecraft.ru — warm dense + tinted placeholders */
+    .page.vibe-c {
+      --h1: 56px; --h1-lh: 1; --h1-ls: -0.02em;
+      --h2: 40px; --h2-lh: 1.05; --h2-ls: -0.01em;
+      --h3: 18px; --lead: 18px; --lead-lh: 26px;
+      --body: 16px; --nav: 14px; --btn: 14px; --metric: 36px; --cap: 13px;
+      --pad-x: 120px; --pad-y: 96px; --gap: 24px; --card-gap: 24px;
+      --content-max: 1200px; --nav-h: 56px;
+      --bg: #F3F1EE;
+      --surface: #FFFFFF;
+      --text: #1C1916;
+      --muted: #6F6860;
+      --accent: #B84E35;
+      --line: #E0DBD5;
+      --ph1: #E8C4B0;
+      --ph2: #C5D4C0;
+      --ph3: #E5D9C5;
+      --ph4: #D4B5A0;
+      --ph5: #E8D0C8;
+      --ph-text: #5C4A3E;
+    }
+    .page.vibe-d { font-family: "DM Sans", sans-serif; }
+    .page.vibe-d h1, .page.vibe-d h2, .page.vibe-d h3 { font-family: "Manrope", "DM Sans", sans-serif; font-weight: 400; }
+    /* D — quiet premium, soft dual cards */
+    .page.vibe-d {
+      --h1: 88px; --h1-lh: 0.95; --h1-ls: -0.03em;
+      --h2: 40px; --h2-lh: 1.1; --h2-ls: -0.01em;
+      --h3: 20px; --lead: 16px; --lead-lh: 22px;
+      --body: 16px; --nav: 14px; --btn: 14px; --metric: 36px; --cap: 13px;
+      --pad-x: 104px; --pad-y: 100px; --gap: 16px; --card-gap: 18px;
+      --content-max: 1232px; --nav-h: 48px;
+      --text: #0A1217;
+      --bg: #FFFFFF;
+      --surface: #FFFFFF;
+      --muted: #6A7278;
+      --accent: #0A1217;
+      --line: #E8E7E5;
+      --ph1: #F6F5F4;
+      --ph2: #F0EFED;
+      --ph3: #EBEAE8;
+      --ph4: #F3F2F0;
+      --ph5: #F6F5F4;
+      --ph-text: #8A9094;
+    }
+    .page.vibe-a {
+      --bg: #0B0B0B; --surface: #141414; --text: #FFFFFF; --muted: #8A8A8A;
+      --accent: #FFFFFF; --line: #2A2A2A;
+      --ph1: #2A2A2A; --ph2: #323232; --ph3: #3A3A3A; --ph4: #2E2E2E; --ph5: #353535;
+      --ph-text: #7A7A7A;
+    }
+    .page.vibe-b {
+      --bg: #FAFAF8; --surface: #FAFAF8; --text: #111111; --muted: #6B6B6B;
+      --accent: #C45C3E; --line: #E8E8E6;
+      --ph1: #EDEBE7; --ph2: #E8E6E1; --ph3: #F0EEEA; --ph4: #E5E2DC; --ph5: #EDEBE7;
+      --ph-text: #8A8680;
+    }
+    .page {
+      width: var(--max);
+      margin: 40px auto;
+      background: var(--bg);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+    }
+    .label {
+      position: absolute;
+      top: 16px; left: 24px;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      z-index: 5;
+    }
+    section { position: relative; }
+    .inner { max-width: var(--content-max, 1200px); margin: 0 auto; padding: 0 var(--pad-x, 120px); }
+    .ph {
+      background: var(--gray);
+      color: var(--ph-text, #888);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--cap, 13px);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      border-radius: 12px;
+    }
+    .ph-tint-1 { background: var(--ph1, #E8C4B0); color: var(--ph-text, #5C4A3E); }
+    .ph-tint-2 { background: var(--ph2, #C5D4C0); color: var(--ph-text, #5C4A3E); }
+    .ph-tint-3 { background: var(--ph3, #E5D9C5); color: var(--ph-text, #5C4A3E); }
+    .ph-tint-4 { background: var(--ph4, #D4B5A0); color: var(--ph-text, #5C4A3E); }
+    .ph-tint-5 { background: var(--ph5, #E8D0C8); color: var(--ph-text, #5C4A3E); }
+    h1 { font-size: var(--h1, 56px); font-weight: 400; letter-spacing: var(--h1-ls, -0.02em); line-height: var(--h1-lh, 1); }
+    h2 { font-size: var(--h2, 40px); font-weight: 400; letter-spacing: var(--h2-ls, -0.01em); line-height: var(--h2-lh, 1.05); }
+    h3 { font-size: var(--h3, 18px); font-weight: 400; }
+    .lead { font-size: var(--lead, 18px); line-height: var(--lead-lh, 26px); color: var(--muted); max-width: 520px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+      min-height: 48px;
+      padding: 14px 28px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: var(--btn, 14px);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .btn-light { background: #fff; color: var(--text); }
+
+    /* 00 Nav */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--nav-h, 72px);
+      padding: 0 var(--pad-x, 48px);
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+    .logo {
+      width: 120px; height: 28px;
+      background: var(--gray);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #888; text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; font-size: var(--nav, 14px); color: var(--muted); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .nav-actions .btn { height: auto; min-height: 40px; padding: 10px 18px; font-size: var(--btn, 14px); }
+    .link-btn { font-size: var(--nav, 14px); color: var(--text); text-decoration: none; padding: 0 12px; }
+
+    /* 01 Hero */
+    .hero {
+      height: 780px;
+      background: var(--ph3, #E5D9C5);
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-media {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(243,241,238,.2), rgba(243,241,238,.55)), var(--ph1, #E8C4B0);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ph-text, #5C4A3E); font-size: 14px; letter-spacing: .06em; text-transform: uppercase;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 var(--pad-x, 120px) var(--pad-y, 100px);
+      color: var(--text);
+      max-width: 900px;
+    }
+    .hero h1 { color: var(--text); margin-bottom: 24px; }
+    .hero .lead { color: var(--muted); margin-bottom: 36px; }
+
+    /* C warm hero side card */
+    .page.vibe-c .hero { background: var(--ph3); }
+    .page.vibe-c .hero-side {
+      position: absolute; right: 96px; top: 50%; transform: translateY(-50%);
+      width: 420px; height: 420px; border-radius: 16px;
+      z-index: 2;
+    }
+
+    /* D hero: quiet type + dual product cards */
+    .page.vibe-d .hero {
+      height: auto;
+      min-height: 0;
+      background: #fff;
+      display: block;
+      padding: var(--pad-y, 100px) var(--pad-x, 104px) 80px;
+      align-items: stretch;
+    }
+    .page.vibe-d .hero-media { display: none; }
+    .page.vibe-d .hero-content {
+      position: static;
+      padding: 0;
+      max-width: 720px;
+      color: var(--text);
+    }
+    .page.vibe-d .hero h1 { color: var(--text); margin-bottom: 16px; }
+    .page.vibe-d .hero .lead { color: var(--muted); margin-bottom: 24px; font-size: 16px; }
+    .page.vibe-d .hero-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--card-gap, 18px);
+      margin-top: 40px;
+    }
+    .page.vibe-d .hero-dual .ph {
+      height: 360px;
+      border-radius: 16px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .page.vibe-d .btn { border-radius: 999px; }
+    .hero-dual { display: none; }
+    .page.vibe-c .hero-dual { display: none; }
+    .page.vibe-d .hero-side { display: none; }
+    .page.vibe-d .hero-dual { display: grid; }
+
+    /* C myth cards with accent bars + tint */
+    .page.vibe-c .myth-card {
+      border-top: none;
+      padding: 0 24px 28px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--ph1);
+    }
+    .page.vibe-c .myth-card:nth-child(2) { background: var(--ph2); }
+    .page.vibe-c .myth-card:nth-child(3) { background: var(--ph3); }
+    .page.vibe-c .myth-card::before {
+      content: "";
+      display: block;
+      height: 4px;
+      background: var(--accent);
+      margin: 0 -24px 20px;
+    }
+    .page.vibe-c .metrics {
+      background: #EBE7E2;
+      padding: 36px;
+      border-radius: 16px;
+    }
+    .page.vibe-c .metric { border-top: none; padding: 8px 0; }
+
+    .page.vibe-d .myth-card {
+      border-top: none;
+      padding: 28px 24px;
+      background: #F6F5F4;
+      border-radius: 16px;
+    }
+    .page.vibe-d .person {
+      background: #F6F5F4;
+      padding: 12px 12px 20px;
+      border-radius: 16px;
+    }
+    .page.vibe-d .person .ph { border-radius: 16px; }
+
+    /* 02 Myths */
+    .myths { padding: var(--pad-y, 120px) 0; background: var(--surface); }
+    .myths .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--card-gap, 40px); margin-top: 64px; }
+    .myth-card { padding-top: 24px; border-top: 1px solid var(--line); }
+    .myth-card .tag { font-size: var(--cap, 13px); color: var(--accent); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .06em; }
+    .myth-card h3 { margin-bottom: 12px; }
+    .myth-card p { color: var(--muted); font-size: var(--body, 16px); }
+
+    /* 03 Steps */
+    .steps { padding: var(--pad-y, 120px) 0; }
+    .steps-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap, 32px); margin-top: 64px; }
+    .step { padding: 32px; background: var(--surface); border-radius: 8px; }
+    .step-num { font-size: 14px; color: var(--accent); margin-bottom: 24px; letter-spacing: .08em; }
+    .step .ph { height: 160px; margin-bottom: 24px; border-radius: 4px; }
+    .step h3 { margin-bottom: 8px; }
+    .step p { color: var(--muted); font-size: 15px; }
+
+    /* 04 People */
+    .people { padding: var(--pad-y, 120px) 0; background: var(--surface); }
+    .people-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--card-gap, 24px); margin-top: 64px; }
+    .person .ph { height: 280px; margin-bottom: 16px; border-radius: 4px; }
+    .person h3 { font-size: var(--h3, 18px); margin-bottom: 4px; }
+    .person p { font-size: var(--cap, 13px); color: var(--muted); }
+
+    /* 05 Trust */
+    .trust { padding: var(--pad-y, 120px) 0; }
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap, 24px); margin: 64px 0; }
+    .metric { padding: 24px 0; border-top: 1px solid var(--line); }
+    .metric .num { font-size: var(--metric, 36px); font-weight: 500; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .metric .cap { font-size: var(--cap, 13px); color: var(--muted); }
+    .trust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap, 48px); align-items: start; }
+    .team { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .team .ph { aspect-ratio: 1; border-radius: 4px; }
+    .guarantees { display: flex; flex-direction: column; gap: var(--gap, 24px); }
+    .guarantee { padding: 24px; background: var(--surface); border-radius: 8px; }
+    .guarantee h3 { margin-bottom: 8px; font-size: var(--h3, 18px); }
+    .guarantee p { color: var(--muted); font-size: var(--body, 16px); }
+
+    /* 06 Product */
+    .product { padding: var(--pad-y, 120px) 0; background: var(--surface); }
+    .product-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; margin-top: 64px; align-items: center; }
+    .product .ph { height: 480px; border-radius: 8px; }
+    .features { display: flex; flex-direction: column; gap: 28px; }
+    .feature h3 { margin-bottom: 6px; font-size: var(--h3, 18px); }
+    .feature p { color: var(--muted); font-size: var(--body, 16px); }
+
+    /* 07 Bridge */
+    .bridge { padding: var(--pad-y, 120px) 0; background: var(--gray-dark); color: #fff; }
+    .bridge .lead { color: rgba(255,255,255,.65); }
+    .bridge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--card-gap, 24px); margin-top: 64px; }
+    .bridge-card { padding: 32px; background: rgba(255,255,255,.06); border-radius: 8px; border: 1px solid rgba(255,255,255,.08); }
+    .bridge-card h3 { margin-bottom: 8px; font-size: 20px; }
+    .bridge-card p { color: rgba(255,255,255,.6); font-size: 15px; }
+    .bridge-card .ph { height: 120px; margin-bottom: 20px; background: #4A4A4A; color: #888; border-radius: 4px; }
+
+    /* 08 FAQ */
+    .faq { padding: var(--pad-y, 120px) 0; background: var(--surface); }
+    .faq-list { margin-top: 64px; max-width: 800px; }
+    .faq-item { padding: 28px 0; border-bottom: 1px solid var(--line); }
+    .faq-item h3 { font-size: var(--h3, 18px); margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .faq-item h3 span { color: var(--muted); font-weight: 400; }
+    .faq-item p { color: var(--muted); font-size: var(--body, 16px); }
+
+    /* 09 CTA */
+    .final-cta {
+      padding: 140px 0;
+      text-align: center;
+      background: var(--bg);
+    }
+    .final-cta h2 { margin-bottom: 16px; }
+    .final-cta .lead { margin: 0 auto 36px; }
+
+    /* 10 Footer */
+    .footer { padding: 80px 0 48px; background: var(--gray-dark); color: rgba(255,255,255,.7); }
+    .footer-top { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 40px; margin-bottom: 64px; }
+    .footer .logo { background: #4A4A4A; color: #999; margin-bottom: 16px; }
+    .footer h4 { color: #fff; font-size: 14px; margin-bottom: 16px; font-weight: 500; }
+    .footer ul { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+    .footer-bottom { display: flex; justify-content: space-between; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.1); font-size: 13px; }
+    .section-head { max-width: 640px; }
+    .section-head h2 { margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <div class="page vibe-c">
+
+    <!-- 00 Nav -->
+    <section class="nav" id="nav">
+      <span class="label">00 · Навигация</span>
+      <div class="logo">логотип</div>
+      <ul class="nav-links">
+        <li>Продукт</li>
+        <li>Как начать</li>
+        <li>Безопасность</li>
+        <li>Для трейдеров</li>
+      </ul>
+      <div class="nav-actions">
+        <a class="link-btn" href="#">Войти</a>
+        <a class="btn" href="#">Начать</a>
+      </div>
+    </section>
+
+    <!-- 01 Hero -->
+    <section class="hero" id="hero">
+      <span class="label">01 · Герой</span>
+      <div class="hero-media">Видео: героиня живёт свой день · крупный план лица/рук · биржа вплетена в жизнь</div>
+      <div class="ph hero-side ph-tint-1">Героиня · день</div>
+      <div class="hero-content">
+        <h1>Крипта — это<br>про людей</h1>
+        <p class="lead">Понятный старт без страха и пафоса. Биржа, которая говорит на человеческом языке.</p>
+        <a class="btn" href="#">Начать</a>
+      </div>
+      <div class="hero-dual">
+        <div class="ph ph-tint-1">Продукт · сцена 01</div>
+        <div class="ph ph-tint-2">Продукт · сцена 02</div>
+      </div>
+    </section>
+
+    <!-- 02 Myths -->
+    <section class="myths" id="myths">
+      <span class="label">02 · Мифы</span>
+      <div class="inner">
+        <div class="section-head">
+          <h2>Кажется сложно.<br>На деле — иначе.</h2>
+          <p class="lead">Три страха, с которых обычно начинается разговор о крипте — и спокойные ответы без жаргона.</p>
+        </div>
+        <div class="grid">
+          <div class="myth-card">
+            <div class="tag">Миф 01</div>
+            <h3>«Это слишком сложно»</h3>
+            <p>Интерфейсы бывают тяжёлыми. Мы сделали путь из трёх шагов — без учебника и без «вы должны уже всё знать».</p>
+          </div>
+          <div class="myth-card">
+            <div class="tag">Миф 02</div>
+            <h3>«Это опасно»</h3>
+            <p>Риски есть в любых финансах. Мы объясняем их простыми словами и показываем, где ваши средства и кто за что отвечает.</p>
+          </div>
+          <div class="myth-card">
+            <div class="tag">Миф 03</div>
+            <h3>«Это не для меня»</h3>
+            <p>Крипта — не клуб посвящённых. Это инструмент. Им пользуются люди с разным опытом — и начинают с малого.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 Steps -->
+    <section class="steps" id="steps">
+      <span class="label">03 · 3 шага</span>
+      <div class="inner">
+        <div class="section-head">
+          <h2>Как начать за три шага</h2>
+          <p class="lead">Короткий онбординг без лишних экранов. От регистрации до первой сделки — понятно с первого раза.</p>
+        </div>
+        <div class="steps-row">
+          <div class="step">
+            <div class="step-num">01</div>
+            <div class="ph ph-tint-1">Регистрация</div>
+            <h3>Создайте аккаунт</h3>
+            <p>Пара минут. Без лишних форм и без ощущения экзамена.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <div class="ph ph-tint-2">Пополнение</div>
+            <h3>Пополните баланс</h3>
+            <p>Понятный способ внести средства. Объясняем каждый шаг на ходу.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <div class="ph ph-tint-3">Сделка</div>
+            <h3>Сделайте первую сделку</h3>
+            <p>Подсказки рядом с действиями. Можно начать с небольшой суммы.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 People -->
+    <section class="people" id="people">
+      <span class="label">04 · Люди</span>
+      <div class="inner">
+        <div class="section-head">
+          <h2>Люди рядом — не скрины профита</h2>
+          <p class="lead">Комьюнити и истории без обещаний доходности. Живые лица вместо безликого рынка.</p>
+        </div>
+        <div class="people-row">
+          <div class="person"><div class="ph ph-tint-1">Анна</div><h3>Анна, 29</h3><p>Начала с малого, чтобы разобраться</p></div>
+          <div class="person"><div class="ph ph-tint-2">Игорь</div><h3>Игорь, 41</h3><p>Торгует рядом с основной работой</p></div>
+          <div class="person"><div class="ph ph-tint-3">Мария</div><h3>Мария, 34</h3><p>Искала понятный язык, не «войну TPS»</p></div>
+          <div class="person"><div class="ph ph-tint-4">Кирилл</div><h3>Кирилл, 26</h3><p>Пришёл из фондового рынка</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 Trust -->
+    <section class="trust" id="trust">
+      <span class="label">05 · Доверие</span>
+      <div class="inner">
+        <div class="section-head">
+          <h2>Доверие — через людей<br>и понятные слова</h2>
+          <p class="lead">Не только техника. Лица команды, простые гарантии и цифры, которые можно проверить.</p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="num">24/7</div><div class="cap">Поддержка на связи</div></div>
+          <div class="metric"><div class="num">100%</div><div class="cap">Резервы покрывают средства</div></div>
+          <div class="metric"><div class="num">0</div><div class="cap">Скрытых комиссий в онбординге</div></div>
+          <div class="metric"><div class="num">1</div><div class="cap">Человеческий язык вместо жаргона</div></div>
+        </div>
+        <div class="trust-grid">
+          <div>
+            <h3 style="margin-bottom:20px">Команда</h3>
+            <div class="team">
+              <div class="ph ph-tint-5">Фаундер</div>
+              <div class="ph ph-tint-2">Команда</div>
+              <div class="ph ph-tint-4">Саппорт</div>
+            </div>
+          </div>
+          <div class="guarantees">
+            <div class="guarantee">
+              <h3>Средства под контролем</h3>
+              <p>Объясняем самостоятельное хранение и контроль средств простыми словами — без «верьте нам на слово».</p>
+            </div>
+            <div class="guarantee">
+              <h3>Доказательство резервов по-человечески</h3>
+              <p>Публичное доказательство, что резервы покрывают средства пользователей — в формате, который читается.</p>
+            </div>
+            <div class="guarantee">
+              <h3>Отзывы без «делай как я»</h3>
+              <p>Реальные впечатления о продукте и поддержке — не скрины баланса и не обещания дохода.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 Product -->
+    <section class="product" id="product">
+      <span class="label">06 · Продукт</span>
+      <div class="inner">
+        <div class="section-head">
+          <h2>Что внутри</h2>
+          <p class="lead">Аккуратный взгляд на продукт. Ключевые возможности — без перегруза и без интерфейса как главного героя в первом экране.</p>
+        </div>
+        <div class="product-layout">
+          <div class="ph ph-tint-4">Мокап продукта</div>
+          <div class="features">
+            <div class="feature"><h3>Понятный торговый экран</h3><p>Только то, что нужно для старта. Сложное — по желанию.</p></div>
+            <div class="feature"><h3>Кошелёк рядом с действиями</h3><p>Баланс и история без квеста по меню.</p></div>
+            <div class="feature"><h3>Подсказки в контексте</h3><p>Объяснения там, где возникает вопрос — не в отдельной статье.</p></div>
+            <div class="feature"><h3>Мобильный доступ</h3><p>Тот же спокойный тон и структура на телефоне.</p></div>
+            <div class="feature"><h3>Уведомления без шума</h3><p>Только важное — без потока «срочных» сигналов.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 Bridge -->
+    <section class="bridge" id="bridge">
+      <span class="label" style="color:#999">07 · Мост для трейдеров</span>
+      <div class="inner">
+        <div class="section-head">
+          <h2>Если вы уже торгуете</h2>
+          <p class="lead">Инструменты, скорость и комиссии — отдельным блоком. Не в герое и не вместо человечности.</p>
+        </div>
+        <div class="bridge-grid">
+          <div class="bridge-card">
+            <div class="ph">Фрагмент интерфейса: ордера/график компактно — инструмент профи, не герой</div>
+            <h3>Инструменты</h3>
+            <p>Ордера, графики и рабочие сценарии для тех, кто знает, что делает.</p>
+          </div>
+          <div class="bridge-card">
+            <div class="ph">Метафора скорости: жест руки / мгновение — без спидометра TPS</div>
+            <h3>Скорость</h3>
+            <p>Отклик и исполнение без «войны TPS» на первом экране — факты здесь.</p>
+          </div>
+          <div class="bridge-card">
+            <div class="ph">Простая таблица комиссий — цифры читаются сразу</div>
+            <h3>Комиссии</h3>
+            <p>Прозрачная сетка. Без мелкого шрифта внизу страницы.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 FAQ -->
+    <section class="faq" id="faq">
+      <span class="label">08 · Вопросы</span>
+      <div class="inner">
+        <div class="section-head">
+          <h2>Частые вопросы</h2>
+          <p class="lead">Безопасность, деньги, старт — то, о чём спрашивают новички в первую очередь.</p>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>Это безопасно? <span>−</span></h3>
+            <p>Мы объясняем модель хранения средств и показываем доказательство резервов понятным языком. Риски рынка остаются — мы их не прячем.</p>
+          </div>
+          <div class="faq-item">
+            <h3>С какой суммы можно начать? <span>+</span></h3>
+            <p>С небольшой. Онбординг не требует «войти по-крупному», чтобы понять продукт.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Нужны ли специальные знания? <span>+</span></h3>
+            <p>Нет. Подсказки и три шага старта рассчитаны на тех, кто слышал про крипту, но ещё не торговал.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Как выводить деньги? <span>+</span></h3>
+            <p>Через понятный сценарий в аккаунте. Сроки и лимиты указаны до подтверждения, а не после.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Есть ли приложение? <span>+</span></h3>
+            <p>Да. Тот же спокойный интерфейс на мобильном — без отдельного «урезанного» опыта.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Вы обещаете доходность? <span>+</span></h3>
+            <p>Нет. Мы не показываем скрины профита и не говорим «делай как я». Торговля — это риск.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 CTA -->
+    <section class="final-cta" id="cta">
+      <span class="label">09 · Призыв</span>
+      <div class="inner">
+        <h2>Начни сегодня</h2>
+        <p class="lead">Без пафоса и без гонки. Спокойный вход в продукт, который говорит на человеческом языке.</p>
+        <a class="btn" href="#">Начать</a>
+      </div>
+    </section>
+
+    <!-- 10 Footer -->
+    <section class="footer" id="footer">
+      <span class="label" style="color:#888">10 · Футер</span>
+      <div class="inner">
+        <div class="footer-top">
+          <div>
+            <div class="logo">логотип</div>
+            <p>Крипта — это про людей. Понятная биржа без лишнего шума.</p>
+          </div>
+          <div>
+            <h4>Продукт</h4>
+            <ul>
+              <li>Возможности</li>
+              <li>Тарифы</li>
+              <li>Приложение</li>
+              <li>Статус</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Компания</h4>
+            <ul>
+              <li>О нас</li>
+              <li>Блог</li>
+              <li>Карьера</li>
+              <li>Контакты</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Правовая информация</h4>
+            <ul>
+              <li>Условия</li>
+              <li>Конфиденциальность</li>
+              <li>Риски</li>
+              <li>Соцсети</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 RUBIN · 4 distinct vibes</span>
+          <span>Switch class: vibe-a / vibe-b / vibe-c / vibe-d</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

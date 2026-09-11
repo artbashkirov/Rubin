@@ -1,0 +1,22 @@
+# deps / OS
+.DS_Store
+node_modules/
+
+# heavy source frames (Pages uses webp/)
+assets/hero-seq/raw/
+assets/hero-seq/raw/**
+
+# local scratch / exports
+assets/png/
+assets/hero-frames/
+telegram_export/
+girl/
+
+# large source videos (prototype uses webp sequence)
+assets/*.mp4
+assets/landing/hero-v1.mp4
+assets/landing/*.mp4
+
+# agent / editor
+.cursor/
+*.log
