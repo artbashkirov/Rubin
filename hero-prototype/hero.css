@@ -20,6 +20,19 @@
   box-sizing: border-box;
 }
 
+/* Шире артборда 1728 страница масштабируется целиком (потолок — 2560).
+   tan(atan2(a, b)) = a / b без единиц. --fold — высота окна в CSS-px под zoom. */
+:root {
+  --fold: 100vh;
+}
+
+@media (min-width: 1729px) {
+  :root {
+    zoom: tan(atan2(min(100vw, 2560px), 1728px));
+    --fold: calc(100vh / tan(atan2(min(100vw, 2560px), 1728px)));
+  }
+}
+
 body {
   margin: 0;
   background: #000;
@@ -34,13 +47,13 @@ a {
 
 .hero-scroll {
   position: relative;
-  height: 420vh;
+  height: calc(4.2 * var(--fold));
 }
 
 .hero-pin {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: var(--fold);
   width: 100%;
   overflow: hidden;
   background: #000;
@@ -53,6 +66,7 @@ a {
   height: 100%;
   display: block;
   z-index: 1;
+  opacity: var(--hero-end-fade, 1);
 }
 
 .stage__scrim {
@@ -60,6 +74,7 @@ a {
   inset: 0;
   z-index: 2;
   pointer-events: none;
+  opacity: var(--hero-end-fade, 1);
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.25) 0%,
@@ -68,6 +83,86 @@ a {
     rgba(0, 0, 0, 0.55) 78%,
     rgba(0, 0, 0, 0.78) 100%
   );
+}
+
+/* Распад терминала (hero-explode.js): над canvas, под scrim — стык с кадром 116 без скачка */
+.hero-explode {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.hero-explode.is-active {
+  visibility: visible;
+}
+
+.hero-explode__stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
+}
+
+.hero-explode__base,
+.hero-explode__group {
+  position: absolute;
+}
+
+.hero-explode__base {
+  inset: 0;
+  background: 0 0 / 100% 100% no-repeat;
+}
+
+.hero-explode__group {
+  transform-style: preserve-3d;
+}
+
+.hero-explode__slab {
+  position: absolute;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hero-explode__part {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+.hero-explode__face,
+.hero-explode__layer {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--slab-radius, 0);
+}
+
+.hero-explode__face {
+  background-repeat: no-repeat;
+  transform: translateZ(0.5px);
+}
+
+/* Торец: тёмный, почти в цвет панели; первый слой за лицом светлее — кромка */
+.hero-explode__layer {
+  background: #0c0d0e;
+  transform: translateZ(calc(var(--slab-depth, 0px) * var(--k) * -1));
+}
+
+.hero-explode__layer--rim {
+  background: #2e3033;
+}
+
+/* Белая вспышка перехода в section 2 — поверх всего, вне pin */
+.page-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hero-status {
@@ -95,6 +190,7 @@ a {
   align-items: center;
   justify-content: space-between;
   pointer-events: none;
+  opacity: var(--hero-end-fade, 1);
 }
 
 .nav a {
@@ -154,6 +250,8 @@ a {
   text-align: center;
   pointer-events: none;
   padding: 0 24px;
+  opacity: calc(var(--hero-copy-fade, 1) * var(--hero-end-fade, 1));
+  transition: opacity 0.05s linear;
 }
 
 .copy h1 {
@@ -174,15 +272,179 @@ a {
   color: #fff;
 }
 
-.after {
-  min-height: 80vh;
+/* Секция 2 — терминал по фрагментам (артборд 1728) */
+.showcase {
+  position: relative;
+  background: #fff;
+  color: #1c1c1c;
+  padding: 48px 40px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.showcase__inner {
+  max-width: 1648px;
+  margin: 0 auto;
+}
+
+.showcase__title {
+  max-width: 1000px;
+  margin: 0;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 48px;
+  letter-spacing: -0.4px;
+}
+
+.showcase__stories {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  margin-top: 40px;
+}
+
+.showcase__row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.showcase__divider {
+  position: absolute;
+  width: 1px;
+  background: rgba(28, 28, 28, 0.5);
+  pointer-events: none;
+}
+
+.showcase__divider--1 {
+  top: 2px;
+  bottom: -4px;
+  left: calc((100% - 80px) / 3 + 17.333px);
+}
+
+.showcase__divider--2 {
+  top: 2px;
+  bottom: -4px;
+  left: calc((100% - 80px) / 3 * 2 + 58.667px);
+}
+
+.showcase__divider--3 {
+  top: 4px;
+  bottom: -48px;
+  left: calc((100% - 40px) / 2 + 18px);
+}
+
+.feature {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature__meta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #111;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 18px;
+  gap: 12px;
+  height: 22px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  color: #666;
+  white-space: nowrap;
 }
+
+.feature__num {
+  flex: 0 0 24px;
+}
+
+.feature__rule {
+  flex: 0 0 32px;
+  height: 1px;
+  background: #666;
+}
+
+.feature__pause {
+  height: var(--feature-pause);
+}
+
+.feature--leverage { --feature-pause: 88px; }
+.feature--spot { --feature-pause: 8px; }
+.feature--orders { --feature-pause: 56px; }
+.feature--news { --feature-pause: 8px; }
+.feature--tv { --feature-pause: 48px; }
+
+.feature__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feature--news .feature__copy {
+  max-width: 484px;
+}
+
+.feature__headline {
+  min-height: 40px;
+  margin: 0;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 39.6px;
+  letter-spacing: -0.24px;
+}
+
+.feature--orders .feature__headline {
+  min-height: 80px;
+}
+
+.feature__text {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.feature__fragment {
+  padding-top: 28px;
+}
+
+.feature__media {
+  position: relative;
+  aspect-ratio: 522.667 / 286;
+  overflow: hidden;
+  border-radius: 8.509px;
+  background: #0b1112;
+}
+
+.showcase__row--info .feature__media {
+  aspect-ratio: 804 / 286;
+  border-radius: 13.2px;
+}
+
+.feature__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.feature__dot {
+  position: absolute;
+  left: var(--dot-x);
+  top: var(--dot-y);
+  width: 6px;
+  height: 6px;
+  border: 1.5px solid #f3efe8;
+  border-radius: 50%;
+  background: #e01119;
+  transform: translate(-50%, -50%);
+}
+
+.feature--leverage .feature__dot { --dot-x: 84%; --dot-y: 69%; }
+.feature--spot .feature__dot { --dot-x: 28%; --dot-y: 35%; }
+.feature--orders .feature__dot { --dot-x: 78%; --dot-y: 24%; }
+.feature--news .feature__dot { --dot-x: 27%; --dot-y: 18%; }
+.feature--tv .feature__dot { --dot-x: 45%; --dot-y: 8%; }
 
 @media (max-width: 1100px) {
   .nav__mid {

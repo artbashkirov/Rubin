@@ -4,24 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RUBIN — Hero scroll prototype</title>
-    <link rel="stylesheet" href="./loader.css" />
     <link rel="stylesheet" href="./hero.css" />
   </head>
-  <body>
-    <div class="site-loader" role="status" aria-live="polite" aria-label="Загрузка">
-      <svg class="site-loader__star" width="49" height="76" viewBox="0 0 49 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <g class="star-pair" data-pair="0">
-          <path d="M20 37.5L24.5 0L29 37.5L24.5 76L20 37.5Z" fill="currentColor"/>
-        </g>
-        <g class="star-pair" data-pair="1">
-          <path d="M26.5 34L0 24L22.5 42L49 52L26.5 34Z" fill="currentColor"/>
-        </g>
-        <g class="star-pair" data-pair="2">
-          <path d="M26.5 42L0 52L22.5 34L49 24L26.5 42Z" fill="currentColor"/>
-        </g>
-      </svg>
-    </div>
-
+  <body class="is-revealed">
     <section class="hero-scroll" aria-label="Hero">
       <div class="hero-pin">
         <canvas class="hero-canvas" aria-hidden="true"></canvas>
@@ -50,18 +35,125 @@
           </p>
         </div>
 
-        <p class="hero-status">Загрузка…</p>
+        <p class="hero-status" hidden></p>
       </div>
     </section>
 
-    <section class="after">
-      <p>Дальше лендинг — pin отпущен.</p>
+    <section class="showcase" aria-labelledby="showcase-title">
+      <div class="showcase__inner">
+        <h2 class="showcase__title" id="showcase-title">Всё для сделки — на одном экране 03</h2>
+
+        <div class="showcase__stories">
+          <div class="showcase__row showcase__row--trade">
+            <span class="showcase__divider showcase__divider--1" aria-hidden="true"></span>
+            <span class="showcase__divider showcase__divider--2" aria-hidden="true"></span>
+
+            <article class="feature feature--leverage">
+              <div class="feature__meta">
+                <span class="feature__num">01</span>
+                <span class="feature__rule" aria-hidden="true"></span>
+                <span class="feature__category">Маржинальная торговля</span>
+              </div>
+              <div class="feature__pause" aria-hidden="true"></div>
+              <div class="feature__copy">
+                <h3 class="feature__headline">Плечо до 5×</h3>
+                <p class="feature__text">Кросс-маржа: свободные средства обеспечивают все открытые позиции</p>
+              </div>
+              <div class="feature__fragment">
+                <div class="feature__media">
+                  <img src="../assets/landing/section-terminal/frag-01-leverage@2x.png" alt="Окно настройки плеча в терминале Rubin" width="523" height="286" loading="lazy" decoding="async" />
+                  <span class="feature__dot" aria-hidden="true"></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="feature feature--spot">
+              <div class="feature__meta">
+                <span class="feature__num">02</span>
+                <span class="feature__rule" aria-hidden="true"></span>
+                <span class="feature__category">Единый счёт</span>
+              </div>
+              <div class="feature__pause" aria-hidden="true"></div>
+              <div class="feature__copy">
+                <h3 class="feature__headline">Спот и перпы</h3>
+                <p class="feature__text">Торгуйте спотом и бессрочными контрактами с одного счёта</p>
+              </div>
+              <div class="feature__fragment">
+                <div class="feature__media">
+                  <img src="../assets/landing/section-terminal/frag-02-spot-perps@2x.png" alt="Список рынков спота и перпов в терминале Rubin" width="523" height="286" loading="lazy" decoding="async" />
+                  <span class="feature__dot" aria-hidden="true"></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="feature feature--orders">
+              <div class="feature__meta">
+                <span class="feature__num">03</span>
+                <span class="feature__rule" aria-hidden="true"></span>
+                <span class="feature__category">Управление сделкой</span>
+              </div>
+              <div class="feature__pause" aria-hidden="true"></div>
+              <div class="feature__copy">
+                <h3 class="feature__headline">Заявки под вашу стратегию</h3>
+                <p class="feature__text">Рыночные и лимитные заявки, стоп-лосс и тейк-профит — в одном терминале</p>
+              </div>
+              <div class="feature__fragment">
+                <div class="feature__media">
+                  <img src="../assets/landing/section-terminal/frag-03-orders@2x.png" alt="Стакан и панель заявок в терминале Rubin" width="523" height="286" loading="lazy" decoding="async" />
+                  <span class="feature__dot" aria-hidden="true"></span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="showcase__row showcase__row--info">
+            <span class="showcase__divider showcase__divider--3" aria-hidden="true"></span>
+
+            <article class="feature feature--news">
+              <div class="feature__meta">
+                <span class="feature__num">04</span>
+                <span class="feature__rule" aria-hidden="true"></span>
+                <span class="feature__category">Контекст рынка</span>
+              </div>
+              <div class="feature__pause" aria-hidden="true"></div>
+              <div class="feature__copy">
+                <h3 class="feature__headline">Новости рядом с рынком</h3>
+                <p class="feature__text">Следите за новостями рядом со стаканом и графиком</p>
+              </div>
+              <div class="feature__fragment">
+                <div class="feature__media">
+                  <img src="../assets/landing/section-terminal/frag-04-news@2x.png" alt="Лента новостей в терминале Rubin" width="804" height="286" loading="lazy" decoding="async" />
+                  <span class="feature__dot" aria-hidden="true"></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="feature feature--tv">
+              <div class="feature__meta">
+                <span class="feature__num">05</span>
+                <span class="feature__rule" aria-hidden="true"></span>
+                <span class="feature__category">Прямой эфир</span>
+              </div>
+              <div class="feature__pause" aria-hidden="true"></div>
+              <div class="feature__copy">
+                <h3 class="feature__headline">Rubin TV</h3>
+                <p class="feature__text">Смотрите деловые телеканалы прямо в торговом терминале</p>
+              </div>
+              <div class="feature__fragment">
+                <div class="feature__media">
+                  <img src="../assets/landing/section-terminal/frag-05-tv@2x.png" alt="Деловой телеканал в терминале Rubin" width="804" height="286" loading="lazy" decoding="async" />
+                  <span class="feature__dot" aria-hidden="true"></span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="./hero.config.js"></script>
-    <script src="./loader.js"></script>
-    <script src="./hero.js"></script>
+    <script src="./vendor/gsap.min.js"></script>
+    <script src="./hero.config.js?v=explode-faster"></script>
+    <script src="./hero-explode.js?v=explode-faster"></script>
+    <script src="./hero.js?v=explode-faster"></script>
   </body>
 </html>
