@@ -12,6 +12,15 @@
   // режим выбирается при загрузке — при переходе через брейкпоинт (поворот планшета, ресайз окна) перезагружаемся
   mobileQuery.addEventListener("change", () => window.location.reload());
 
+  // Обновление страницы — всегда с героя: якорь от клика по меню остаётся в адресе и иначе открывал бы раздел
+  // при каждом reload, а восстановленная браузером прокрутка — середину страницы. Ссылка с якорем по-прежнему ведёт в раздел
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  const navEntry = performance.getEntriesByType ? performance.getEntriesByType("navigation")[0] : null;
+  if (navEntry && navEntry.type === "reload" && location.hash) {
+    history.replaceState(null, "", location.pathname + location.search);
+    window.scrollTo(0, 0);
+  }
+
   let viewW = 0;
   let viewH = 0;
   let dpr = 1;
@@ -20,6 +29,16 @@
   function pageZoom() {
     return parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
   }
+
+  // --fold под zoom (100vh / zoom через tan(atan2()) в CSS) Safari не вычисляет — высота героя падает в 0,
+  // наверху оказывается section 2, а idle держит скролл. Ставим высоту окна в px артборда из JS
+  function setFold() {
+    const z = pageZoom();
+    if (z !== 1) document.documentElement.style.setProperty("--fold", `${window.innerHeight / z}px`);
+    else document.documentElement.style.removeProperty("--fold");
+  }
+  setFold();
+  window.addEventListener("resize", setFold);
 
   function fitCanvas() {
     viewW = pin.clientWidth;
@@ -904,14 +923,27 @@
     featureVideos.forEach((video) => featureObserver.observe(video));
   }
 
-  document.querySelectorAll(".roll__label").forEach((label) => {
-    const chars = [...label.textContent.trim()];
+  /** Буква в своей ячейке теряет кернинг с соседями — возвращаем его отрицательным margin-right,
+   *  иначе слово шире исходного. Мерим после загрузки шрифта. */
+  function splitRollLabel(label) {
+    const text = label.textContent.trim();
+    label.textContent = text;
+    const node = label.firstChild;
+    const range = document.createRange();
+    const chars = [...text];
+    const starts = [];
+    let off = 0;
+    for (const ch of chars) {
+      range.setStart(node, off);
+      range.setEnd(node, off + ch.length);
+      starts.push(range.getBoundingClientRect().left);
+      off += ch.length;
+    }
+    starts.push(label.getBoundingClientRect().right);
+
     label.textContent = "";
-    chars.forEach((ch, i) => {
-      if (ch === " ") {
-        label.append(Object.assign(document.createElement("span"), { className: "roll__space", textContent: " " }));
-        return;
-      }
+    const cells = chars.map((ch, i) => {
+      if (ch === " ") return Object.assign(document.createElement("span"), { className: "roll__space", textContent: " " });
       const cell = document.createElement("span");
       cell.className = "roll__char";
       const track = document.createElement("span");
@@ -919,7 +951,18 @@
       track.style.setProperty("--i", i);
       for (let k = 0; k < 2; k++) track.append(Object.assign(document.createElement("span"), { textContent: ch }));
       cell.append(track);
-      label.append(cell);
+      return cell;
     });
+    label.append(...cells);
+
+    const fontPx = (parseFloat(getComputedStyle(label).fontSize) || 16) * pageZoom();
+    cells.forEach((cell, i) => {
+      const kern = starts[i + 1] - starts[i] - cell.getBoundingClientRect().width;
+      if (Math.abs(kern) > 0.01) cell.style.marginRight = `${(kern / fontPx).toFixed(4)}em`;
+    });
+  }
+
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+    document.querySelectorAll(".roll__label").forEach(splitRollLabel);
   });
 })();
