@@ -92,6 +92,8 @@ window.HeroExplode = (() => {
       };
     });
 
+    const shade = el("div", "hero-explode__shade", root);
+
     pin.appendChild(root);
 
     function layout(viewW, viewH) {
@@ -108,6 +110,9 @@ window.HeroExplode = (() => {
     const ANCHOR = 1.05 / dur;
     const FLASH_FROM = 1.1 / dur;
     const DRIFT = 0.6;
+    // кадр 116 темнее и мягче мастера: распад проявляется поверх него в его тоне и к концу наклона выходит на свою яркость
+    const FADE_IN = (cfg.fadeIn ?? 0) / dur;
+    const TONE = cfg.matchBrightness ?? 1;
 
     function render(t, driveFlash = true) {
       const tilt = easeInOut(seg(t, 0, TILT_END));
@@ -130,6 +135,12 @@ window.HeroExplode = (() => {
           `translate3d(${s.ox * spread}px, ${s.oy * spread}px, ${1 + s.z * 0.44 * grow}px)`;
       }
 
+      root.style.opacity = String(FADE_IN > 0 ? seg(t, 0, FADE_IN) : 1);
+      // затемнение отдельным слоем: фильтр на 3D-группе заставляет перерисовывать её и даёт фриз на старте разлёта
+      // и уходит до старта разлёта: живой слой поверх 3D-плит в этот момент тоже даёт фриз
+      const dim = (1 - TONE) * (1 - easeInOut(seg(t, 0, TILT_END * 0.6)));
+      shade.style.opacity = String(dim);
+      shade.style.display = dim > 0 ? "" : "none";
       root.style.filter = `brightness(${1 + 0.8 * seg(t, ANCHOR, 0.95)})`;
       if (driveFlash) flash.style.opacity = String(Math.pow(seg(t, FLASH_FROM, 1), 2));
     }

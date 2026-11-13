@@ -113,6 +113,13 @@ a {
   position: absolute;
 }
 
+.hero-explode__shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+}
+
 .hero-explode__base {
   inset: 0;
   background: 0 0 / 100% 100% no-repeat;
@@ -277,7 +284,7 @@ a {
   position: relative;
   background: #fff;
   color: #1c1c1c;
-  padding: 48px 40px;
+  padding: 48px 40px 80px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -429,24 +436,6 @@ a {
   height: 100%;
   object-fit: cover;
 }
-
-.feature__dot {
-  position: absolute;
-  left: var(--dot-x);
-  top: var(--dot-y);
-  width: 6px;
-  height: 6px;
-  border: 1.5px solid #f3efe8;
-  border-radius: 50%;
-  background: #e01119;
-  transform: translate(-50%, -50%);
-}
-
-.feature--leverage .feature__dot { --dot-x: 84%; --dot-y: 69%; }
-.feature--spot .feature__dot { --dot-x: 28%; --dot-y: 35%; }
-.feature--orders .feature__dot { --dot-x: 78%; --dot-y: 24%; }
-.feature--news .feature__dot { --dot-x: 27%; --dot-y: 18%; }
-.feature--tv .feature__dot { --dot-x: 45%; --dot-y: 8%; }
 
 @media (max-width: 1100px) {
   .nav__mid {

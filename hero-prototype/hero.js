@@ -237,6 +237,19 @@
     const explodeAt = 1 - (CFG.endHold ?? 0);
     let prevProgress = 0;
     let explodeLockY = 0;
+    /** Обратный проход из section 2: последний кадр без затухания — разворот назад, как только ушла section 2. */
+    let returning = false;
+    /** Повторный распад вниз — только если на обратном проходе реально ушли в секвенцию. */
+    let explodeArmed = true;
+    const rearmAt = explodeAt - 0.06;
+    /**
+     * Кадр ведём от точки разворота скролла: вниз — к последнему кадру к explodeAt (тот же запас под инерцию,
+     * что и в первом проходе), вверх — к первому кадру к началу. С самого верха это ровно p / explodeAt.
+     */
+    let seqF = 0;
+    let seqDir = 1;
+    let anchorP = 0;
+    let anchorF = 0;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const explodeImageReady = explode
       ? Promise.all(
@@ -258,14 +271,26 @@
       explodeVideo.src = EX.video;
     }
 
-    function animProgress(p) {
-      const hold = CFG.endHold ?? 0;
-      if (hold <= 0) return p;
-      return Math.min(1, p / (1 - hold));
+    function resetSeq(p, f, dir) {
+      seqF = f;
+      seqDir = dir;
+      anchorP = p;
+      anchorF = f;
     }
 
-    function frameIndex(p) {
-      const forward = Math.round(animProgress(p) * (count - 1));
+    function updateSeqFrame(p) {
+      const d = p > scrollProgress ? 1 : p < scrollProgress ? -1 : 0;
+      if (d && d !== seqDir) resetSeq(scrollProgress, seqF, d);
+      const down = seqDir > 0;
+      const toP = down ? (returning && !explodeArmed ? 1 : explodeAt) : 0;
+      const toF = down ? count - 1 : 0;
+      const span = toP - anchorP;
+      const k = span === 0 ? 1 : Math.min(1, Math.max(0, (p - anchorP) / span));
+      seqF = anchorF + (toF - anchorF) * k;
+    }
+
+    function frameIndex() {
+      const forward = Math.round(seqF);
       return CFG.reverse ? count - 1 - forward : forward;
     }
 
@@ -280,7 +305,7 @@
 
     function paintSequence() {
       clear();
-      const want = frameIndex(scrollProgress);
+      const want = frameIndex();
       const { frame, idx } = nearestFrame(want);
       if (frame) {
         drawCover(frame, frame.naturalWidth, frame.naturalHeight, 1);
@@ -330,6 +355,7 @@
     function lockScrollTop() {
       if (window.scrollY !== 0) window.scrollTo(0, 0);
       scrollProgress = 0;
+      resetSeq(0, 0, 1);
       applyEndFade(0);
       applyCopyFade(0);
     }
@@ -338,6 +364,8 @@
       const wasIdle = phase === "idle" || pendingSequence;
       pendingSequence = false;
       allowIdleReenter = false;
+      returning = false;
+      explodeArmed = true;
       phase = "sequence";
       stopRaf();
       setStatus("");
@@ -351,6 +379,7 @@
       window.scrollTo(0, 0);
       scrollProgress = 0;
       prevProgress = 0;
+      resetSeq(0, 0, 1);
       applyEndFade(0);
       applyCopyFade(0);
       paintSequence();
@@ -364,6 +393,8 @@
       }
       pendingSequence = false;
       allowIdleReenter = false;
+      returning = false;
+      explodeArmed = true;
       // длинный gate: инерция trackpad иначе снова заказывает sequence
       idleGestureGateUntil = performance.now() + 1600;
       phase = "idle";
@@ -434,6 +465,10 @@
     }
 
     function applyEndFade(p) {
+      if (returning) {
+        pin.style.setProperty("--hero-end-fade", "1");
+        return;
+      }
       if (!CFG.endFade) {
         pin.style.removeProperty("--hero-end-fade");
         return;
@@ -449,16 +484,14 @@
     }
 
     /** Fade заголовка в начале разворота (по номерам кадров). */
-    function applyCopyFade(p) {
+    function applyCopyFade() {
       const from = CFG.copyFadeFrom;
       const to = CFG.copyFadeTo;
       if (from == null || to == null || to <= from) {
         pin.style.setProperty("--hero-copy-fade", "1");
         return;
       }
-      const start = CFG.startIndex ?? 0;
-      const last = start + count - 1;
-      const frame = start + animProgress(p) * (last - start);
+      const frame = (CFG.startIndex ?? 0) + seqF;
       let opacity = 1;
       if (frame <= from) opacity = 1;
       else if (frame >= to) opacity = 0;
@@ -468,8 +501,13 @@
 
     function explodeLive() {
       return explodeImageReady.then(() => {
-        clear();
-        return explode.play(reducedMotion ? 0.01 : EX.duration);
+        const duration = reducedMotion ? 0.01 : EX.duration;
+        const run = explode.play(duration);
+        // кадр 116 держим под распадом, пока тот проявляется; дальше гасим — иначе он виден по краям наклона и в дырах
+        const fadeMs = ((EX.fadeIn ?? 0) / (EX.duration || 1)) * duration * 1000;
+        if (fadeMs > 0) setTimeout(() => phase === "explode" && clear(), fadeMs + 34);
+        else clear();
+        return run;
       });
     }
 
@@ -525,6 +563,10 @@
       if (explode) explode.reset();
       phase = "sequence";
       prevProgress = 1;
+      scrollProgress = 1;
+      returning = true;
+      explodeArmed = false;
+      resetSeq(1, count - 1, 1);
       const next = document.querySelector(".showcase");
       if (next) window.scrollTo(0, next.offsetTop * pageZoom());
       onProgress(nativeProgress());
@@ -534,8 +576,11 @@
 
     function startExplode() {
       phase = "explode";
-      explodeLockY = window.scrollY;
+      returning = false;
+      explodeLockY = Math.min(window.scrollY, heroEndY());
+      if (Math.abs(window.scrollY - explodeLockY) > 1) window.scrollTo(0, explodeLockY);
       scrollProgress = explodeAt;
+      seqF = count - 1;
       pin.style.setProperty("--hero-end-fade", "1");
       paintSequence();
       const run = explodeVideo ? explodeFromVideo() : explode ? explodeLive() : Promise.resolve();
@@ -556,16 +601,23 @@
       }
 
       // только при движении вниз через последний кадр и когда он уже загружен
-      const crossed = EX && prevProgress < explodeAt && p >= explodeAt && frames[count - 1];
+      if (returning && p < rearmAt) explodeArmed = true;
+      const crossed = EX && explodeArmed && prevProgress < explodeAt && p >= explodeAt && frames[count - 1];
       prevProgress = p;
       if (crossed) {
         startExplode();
         return;
       }
 
+      updateSeqFrame(p);
       scrollProgress = p;
+      if (p >= 1 && !returning) {
+        returning = true;
+        explodeArmed = false;
+        resetSeq(1, seqF, 1);
+      }
       applyEndFade(p);
-      applyCopyFade(p);
+      applyCopyFade();
 
       // возврат в луп только после того, как реально ушли в разворот и вернулись наверх
       if (p > reenterAt + 0.02) allowIdleReenter = true;
@@ -623,13 +675,22 @@
         setStatus("Ошибка загрузки кадров");
       });
 
-    function nativeProgress() {
+    function heroRange() {
       const el = document.querySelector(".hero-scroll");
-      if (!el) return 0;
+      if (!el) return null;
       const z = pageZoom();
-      const top = el.offsetTop * z;
-      const range = Math.max(1, el.offsetHeight * z - window.innerHeight);
-      return Math.min(1, Math.max(0, (window.scrollY - top) / range));
+      return { top: el.offsetTop * z, range: Math.max(1, el.offsetHeight * z - window.innerHeight) };
+    }
+
+    function heroEndY() {
+      const r = heroRange();
+      return r ? r.top + r.range : window.scrollY;
+    }
+
+    function nativeProgress() {
+      const r = heroRange();
+      if (!r) return 0;
+      return Math.min(1, Math.max(0, (window.scrollY - r.top) / r.range));
     }
 
     function bindScrollScrub() {
@@ -652,6 +713,9 @@
       pendingSequence,
       idleGateMs: Math.max(0, idleGestureGateUntil - performance.now()),
       allowIdleReenter,
+      returning,
+      explodeArmed,
+      seqF,
       scrollProgress,
       lastSeqIndex,
       framesReady,

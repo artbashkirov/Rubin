@@ -40,6 +40,9 @@ window.HERO_SEQ = {
     video: "../assets/landing/explode/explode.mp4",
     duration: 1.45,
     whiteOut: 0.4,
+    // стык с кадром 116: распад проявляется поверх него (с) и стартует в его яркости (доля от мастера)
+    fadeIn: 0.2,
+    matchBrightness: 0.8,
     image: "../assets/landing/explode/terminal-master@2x.png",
     // мастер с прозрачными дырками на месте кусков
     rest: "../assets/landing/explode/terminal-rest@2x.png",
