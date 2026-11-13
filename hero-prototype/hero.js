@@ -700,4 +700,18 @@
     console.warn(err);
     setStatus("Нет кадров. Проверь assets/hero-seq/webp/");
   });
+
+  const featureVideos = [...document.querySelectorAll(".feature__media video")];
+  if (featureVideos.length && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const featureObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) entry.target.play().catch(() => {});
+          else entry.target.pause();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    featureVideos.forEach((video) => featureObserver.observe(video));
+  }
 })();

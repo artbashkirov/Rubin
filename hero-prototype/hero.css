@@ -422,10 +422,12 @@ a {
   border-radius: 13.2px;
 }
 
-.feature__media img {
+.feature__media img,
+.feature__media video {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 .feature__dot {
