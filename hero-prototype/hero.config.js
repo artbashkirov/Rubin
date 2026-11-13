@@ -24,10 +24,14 @@ window.HERO_SEQ = {
   rawExt: "jpg",
   rawPad: 2,
 
-  // Idle loop: до скролла — L05 луп; после доигрыша цикла — sequence
+  // Idle loop: до скролла — L05 луп; скролл — sequence
   idleVideo: "../assets/landing/hero-idle.mp4?v=idle-user-0d3b",
   idleExitAt: 0.001,
   idleReenterAt: 0.01,
+  // Скролл посреди лупа: sequence сразу, её кадр проявляется поверх лупа, который продолжает играть (с)
+  idleBlend: 0.6,
+  // До конца цикла меньше этого — доигрываем луп: стык с первым кадром бесшовный (с)
+  idleTail: 0.9,
 
   // Последние N% скролла: hold на exploded + fade в section 2
   endHold: 0.08,

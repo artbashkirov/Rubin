@@ -239,8 +239,12 @@
     let rafId = 0;
     let lastSeqIndex = -1;
     let framesReady = false;
-    /** Скроллнул во время idle — доигрываем текущий цикл лупа, потом sequence. */
+    /** Скроллнул под самый конец цикла — доигрываем луп, потом sequence. */
     let pendingSequence = false;
+    /** Наплыв sequence на идущий луп: время старта, 0 — наплыва нет. */
+    let blendFrom = 0;
+    const blendMs = (CFG.idleBlend ?? 0.6) * 1000;
+    const idleTail = CFG.idleTail ?? 0.9;
     /** После возврата в idle игнорим инерцию скролла. */
     let idleGestureGateUntil = 0;
     let idlePrevTime = 0;
@@ -318,14 +322,48 @@
       return { frame: startFrame, idx: seqStartIdx };
     }
 
+    function stopIdleVideo() {
+      if (!idleVideo) return;
+      try {
+        idleVideo.pause();
+        idleVideo.currentTime = 0;
+      } catch (_) {}
+    }
+
+    function endBlend() {
+      if (!blendFrom) return;
+      blendFrom = 0;
+      stopIdleVideo();
+    }
+
+    /** Доля sequence поверх лупа (ease-in-out). Движение в лупе растворяется на ходу, а не пропадает кадром. */
+    function blendAmount() {
+      if (!blendFrom) return 1;
+      const t = (performance.now() - blendFrom) / blendMs;
+      if (t >= 1) {
+        endBlend();
+        return 1;
+      }
+      return t * t * (3 - 2 * t);
+    }
+
     function paintSequence() {
       clear();
+      const k = blendAmount();
+      if (k < 1) drawCover(idleVideo, idleVideo.videoWidth, idleVideo.videoHeight, 1);
       const want = frameIndex();
       const { frame, idx } = nearestFrame(want);
       if (frame) {
-        drawCover(frame, frame.naturalWidth, frame.naturalHeight, 1);
+        drawCover(frame, frame.naturalWidth, frame.naturalHeight, k);
         lastSeqIndex = idx;
       }
+    }
+
+    function tickBlend() {
+      rafId = 0;
+      if (!blendFrom || phase !== "sequence") return;
+      paintSequence();
+      if (blendFrom) rafId = requestAnimationFrame(tickBlend);
     }
 
     function paintIdleVideo() {
@@ -375,7 +413,7 @@
       applyCopyFade(0);
     }
 
-    function enterSequence() {
+    function enterSequence(blend = false) {
       const wasIdle = phase === "idle" || pendingSequence;
       pendingSequence = false;
       allowIdleReenter = false;
@@ -384,12 +422,8 @@
       phase = "sequence";
       stopRaf();
       setStatus("");
-      if (idleVideo) {
-        try {
-          idleVideo.pause();
-          idleVideo.currentTime = 0;
-        } catch (_) {}
-      }
+      blendFrom = blend && idleVideo && idleVideo.videoWidth ? performance.now() : 0;
+      if (!blendFrom) stopIdleVideo();
       // разворот с начала — скролл за время доигрыша лупа не учитываем
       window.scrollTo(0, 0);
       scrollProgress = 0;
@@ -398,7 +432,8 @@
       applyEndFade(0);
       applyCopyFade(0);
       paintSequence();
-      if (wasIdle) console.info("[hero] sequence start @ frame", lastSeqIndex);
+      if (blendFrom) rafId = requestAnimationFrame(tickBlend);
+      if (wasIdle) console.info("[hero] sequence start @ frame", lastSeqIndex, blendFrom ? "(blend)" : "");
     }
 
     function enterIdle() {
@@ -406,6 +441,8 @@
         enterSequence();
         return;
       }
+      stopRaf();
+      blendFrom = 0;
       pendingSequence = false;
       allowIdleReenter = false;
       returning = false;
@@ -441,13 +478,18 @@
     }
 
     /**
-     * Жест скролла в idle: НЕ выключаем video.loop (иначе после возврата наверх
-     * луп отыгрывает 1 раз и становится статикой). Ждём wrap цикла, потом sequence.
+     * Жест скролла в idle: sequence сразу, с наплывом поверх лупа. Под самый конец цикла — ждём wrap:
+     * стык бесшовный. НЕ выключаем video.loop (иначе после возврата наверх луп отыгрывает 1 раз и становится статикой).
      */
     function requestSequenceAfterLoop() {
       if (!idleVideo || phase !== "idle") return;
       if (performance.now() < idleGestureGateUntil) return;
       if (pendingSequence) return;
+      const dur = idleVideo.duration || 0;
+      if (dur > 0 && dur - (idleVideo.currentTime || 0) > idleTail) {
+        enterSequence(true);
+        return;
+      }
       pendingSequence = true;
       idlePrevTime = idleVideo.currentTime || 0;
       lockScrollTop();
@@ -590,6 +632,7 @@
     }
 
     function startExplode() {
+      endBlend();
       phase = "explode";
       returning = false;
       explodeLockY = Math.min(window.scrollY, heroEndY());
@@ -644,26 +687,92 @@
       paintSequence();
     }
 
-    /** В idle жесты скролла не двигают страницу — только заказывают переход после лупа. */
+    let touchStartY = null;
+    window.addEventListener("touchstart", (e) => (touchStartY = e.touches[0] ? e.touches[0].clientY : null), { passive: true });
+
+    /** Только жест вниз. Вверх (в т.ч. инерция после возврата наверх), горизонталь и щипок луп не прерывают. */
+    function isDownGesture(e) {
+      if (e.type === "wheel") return e.deltaY > 0 && Math.abs(e.deltaY) >= Math.abs(e.deltaX);
+      if (e.type === "touchmove") return touchStartY != null && e.touches[0] && touchStartY - e.touches[0].clientY > 8;
+      if (e.type === "keydown") return ["ArrowDown", "PageDown", "End", " ", "Spacebar"].includes(e.key) && !e.shiftKey;
+      return false;
+    }
+
+    /** В idle жесты скролла не двигают страницу — только заказывают переход в sequence. */
     function onIdleScrollGesture(e) {
+      if (e.type === "wheel" && e.ctrlKey) return;
       if (phase === "explode") {
-        if (e && e.cancelable) e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         return;
       }
       if (phase !== "idle") return;
-      if (e && typeof e.preventDefault === "function") e.preventDefault();
+      if (e.cancelable) e.preventDefault();
       lockScrollTop();
-      if (performance.now() < idleGestureGateUntil) return;
+      if (performance.now() < idleGestureGateUntil || !isDownGesture(e)) return;
       requestSequenceAfterLoop();
     }
+
+    function docTop(el) {
+      let y = 0;
+      for (let n = el; n; n = n.offsetParent) y += n.offsetTop;
+      return y * pageZoom();
+    }
+
+    function sectionBelowHero(hash) {
+      if (!hash || hash.length < 2) return null;
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+      const hero = document.querySelector(".hero-scroll");
+      return el && hero && !hero.contains(el) ? el : null;
+    }
+
+    /**
+     * Якорь ниже героя: сразу в состояние «вернулись из section 2» (последний кадр, распад не взведён) и мгновенный прыжок.
+     * Плавный скролл нельзя: по дороге вниз он пересёк бы explodeAt.
+     */
+    function jumpToSection(target) {
+      if (phase === "explode") return;
+      stopRaf();
+      blendFrom = 0;
+      stopIdleVideo();
+      pendingSequence = false;
+      phase = "sequence";
+      returning = true;
+      explodeArmed = false;
+      prevProgress = 1;
+      scrollProgress = 1;
+      resetSeq(1, count - 1, 1);
+      applyEndFade(1);
+      applyCopyFade();
+      paintSequence();
+      window.scrollTo({ top: docTop(target), behavior: "instant" });
+    }
+
+    document.addEventListener("click", (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const link = e.target.closest('a[href^="#"]');
+      const target = link && sectionBelowHero(link.getAttribute("href"));
+      if (!target) return;
+      e.preventDefault();
+      if (location.hash !== link.hash) history.pushState(null, "", link.hash);
+      jumpToSection(target);
+    });
+
+    window.addEventListener("hashchange", () => {
+      const target = sectionBelowHero(location.hash);
+      if (target) jumpToSection(target);
+    });
 
     window.__heroRedraw = () => {
       if (phase === "sequence") paintSequence();
       else paintIdleVideo();
     };
 
-    // Idle сразу; секвенцию догружаем в фоне
-    if (idleVideo) {
+    // Idle сразу; секвенцию догружаем в фоне. Открыли по ссылке на раздел ниже героя — сразу туда
+    const bootTarget = sectionBelowHero(location.hash);
+    if (bootTarget) {
+      jumpToSection(bootTarget);
+      console.info("[hero] boot at", location.hash);
+    } else if (idleVideo) {
       enterIdle();
       console.info("[hero] idle playing; preloading sequence in background");
     } else {
@@ -726,6 +835,7 @@
     window.__heroDebug = () => ({
       phase,
       pendingSequence,
+      blending: !!blendFrom,
       idleGateMs: Math.max(0, idleGestureGateUntil - performance.now()),
       allowIdleReenter,
       returning,

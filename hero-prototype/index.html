@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RUBIN — Hero scroll prototype</title>
-    <link rel="stylesheet" href="./hero.css?v=cta-15b" />
+    <link rel="stylesheet" href="./hero.css?v=hero-v5b" />
   </head>
   <body class="is-revealed">
     <section class="hero-scroll" aria-label="Hero">
@@ -14,7 +14,7 @@
 
         <header class="nav">
           <a class="nav__logo" href="#" aria-label="Rubin">
-            <img src="../assets/landing/logo.svg" alt="Rubin" width="120" height="38" />
+            <img src="../assets/landing/logo.svg" alt="Rubin" width="139" height="44" />
           </a>
           <nav class="nav__mid" aria-label="Основное">
             <a href="#terminal">Терминал</a>
@@ -35,10 +35,25 @@
 
         <div class="copy">
           <h1>Perp DEX-биржа на собственном L1</h1>
-          <p>
-            Топовые пары, плечо до 5x и пополнение в USDC — без лишних шагов и
-            старой логики CEX
-          </p>
+          <p>Топовые пары, плечо до 5х и пополнение через СБП</p>
+          <div class="copy__chains">
+            <div class="copy__chains-track">
+              <div class="copy__chains-set">
+                <img src="../assets/landing/chains/polygon.svg" alt="Polygon" width="160" height="48" />
+                <img src="../assets/landing/chains/arbitrum.svg" alt="Arbitrum" width="165" height="48" />
+                <img src="../assets/landing/chains/zcash.svg" alt="Zcash" width="167" height="48" />
+                <img src="../assets/landing/chains/ethereum.svg" alt="Ethereum" width="144" height="48" />
+                <img src="../assets/landing/chains/gram.svg" alt="Gram" width="118" height="48" />
+              </div>
+              <div class="copy__chains-set" aria-hidden="true">
+                <img src="../assets/landing/chains/polygon.svg" alt="" width="160" height="48" />
+                <img src="../assets/landing/chains/arbitrum.svg" alt="" width="165" height="48" />
+                <img src="../assets/landing/chains/zcash.svg" alt="" width="167" height="48" />
+                <img src="../assets/landing/chains/ethereum.svg" alt="" width="144" height="48" />
+                <img src="../assets/landing/chains/gram.svg" alt="" width="118" height="48" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <p class="hero-status" hidden></p>
@@ -148,8 +163,8 @@
     </section>
 
     <script src="./vendor/gsap.min.js"></script>
-    <script src="./hero.config.js?v=explode-seam2"></script>
+    <script src="./hero.config.js?v=idle-blend1"></script>
     <script src="./hero-explode.js?v=explode-seam2"></script>
-    <script src="./hero.js?v=cta-roll"></script>
+    <script src="./hero.js?v=hero-v5c"></script>
   </body>
 </html>
