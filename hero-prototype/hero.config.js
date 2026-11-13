@@ -11,7 +11,7 @@
 window.HERO_SEQ = {
   preferSequence: true,
 
-  dir: "/assets/hero-seq/webp/",
+  dir: "../assets/hero-seq/webp/",
   prefix: "frame-",
   ext: "webp",
   pad: 4,
@@ -19,13 +19,13 @@ window.HERO_SEQ = {
   startIndex: 0,
   count: 117,
 
-  rawDir: "/assets/hero-seq/raw/",
+  rawDir: "../assets/hero-seq/raw/",
   rawPrefix: "",
   rawExt: "jpg",
   rawPad: 2,
 
   // Idle loop: до скролла — L05 луп; после доигрыша цикла — sequence
-  idleVideo: "/assets/landing/hero-idle.mp4?v=idle-user-0d3b",
+  idleVideo: "../assets/landing/hero-idle.mp4?v=idle-user-0d3b",
   idleExitAt: 0.001,
   idleReenterAt: 0.01,
 

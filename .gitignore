@@ -16,6 +16,7 @@ girl/
 assets/*.mp4
 assets/landing/hero-v1.mp4
 assets/landing/*.mp4
+!assets/landing/hero-idle.mp4
 
 # agent / editor
 .cursor/
