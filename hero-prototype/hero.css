@@ -191,7 +191,8 @@ a {
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
-  width: min(1176px, calc(100% - 48px));
+  /* края — как у контента секции 2 (.showcase padding 40 + .showcase__inner 1648) */
+  width: min(1648px, calc(100% - 80px));
   height: 38px;
   display: flex;
   align-items: center;
@@ -245,6 +246,89 @@ a {
   font-weight: 400;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* Кнопка с прокруткой букв: каждая буква — окно в строку (line-height 1.4), под буквой её копия.
+   На hover буквы по очереди уезжают вверх, стрелка переходит справа налево; назад буквы — без анимации */
+.roll__inner {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.roll__label {
+  display: inline-flex;
+}
+
+.roll__char {
+  display: inline-block;
+  height: 1.4em;
+  overflow: hidden;
+}
+
+/* top, а не transform: на transform Chrome растрирует буквы отдельными слоями и они встают неровно */
+.roll__track {
+  display: block;
+  position: relative;
+  top: 0;
+}
+
+.roll__track > span {
+  display: block;
+  height: 1.4em;
+}
+
+.roll__space {
+  white-space: pre;
+}
+
+.roll__arrow {
+  display: inline-block;
+  white-space: nowrap;
+  transition:
+    width 0.3s cubic-bezier(0.33, 1, 0.68, 1),
+    margin 0.3s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.3s cubic-bezier(0.33, 1, 0.68, 1),
+    transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.roll__arrow--in {
+  width: 0;
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.roll__arrow--out {
+  width: 1.4em;
+  margin-left: 0.7em;
+}
+
+@media (hover: hover) {
+  .roll:hover .roll__track {
+    top: -1.4em;
+    transition: top 0.4s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--i, 0) * 30ms);
+  }
+
+  .roll:hover .roll__arrow--in {
+    width: 1.4em;
+    margin-right: 0.7em;
+    opacity: 1;
+    transform: none;
+  }
+
+  .roll:hover .roll__arrow--out {
+    width: 0;
+    margin-left: 0;
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roll .roll__track,
+  .roll .roll__arrow {
+    transition: none;
+  }
 }
 
 /* Текст — к низу экрана */
@@ -440,5 +524,76 @@ a {
 @media (max-width: 1100px) {
   .nav__mid {
     display: none;
+  }
+}
+
+/* Мобайл (≤950, как в hero.js): статичный первый экран без скролл-секвенции, секция 2 в одну колонку */
+@media (max-width: 950px) {
+  .hero-scroll {
+    height: auto;
+  }
+
+  .hero-pin {
+    position: relative;
+  }
+
+  .nav {
+    width: calc(100% - 48px);
+  }
+
+  .showcase {
+    padding: 48px 24px 80px;
+  }
+
+  .showcase__title {
+    font-size: 32px;
+    line-height: 38px;
+    letter-spacing: -0.32px;
+  }
+
+  .showcase__stories {
+    gap: 48px;
+    margin-top: 32px;
+  }
+
+  .showcase__row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 48px;
+  }
+
+  .showcase__divider,
+  .feature__pause {
+    display: none;
+  }
+
+  .feature {
+    flex: none;
+  }
+
+  .feature__headline,
+  .feature--orders .feature__headline {
+    min-height: 0;
+    font-size: 28px;
+    line-height: 31px;
+    letter-spacing: -0.28px;
+  }
+
+  .feature__text {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .feature__fragment {
+    padding-top: 12px;
+  }
+}
+
+/* адресная строка мобильных браузеров: первый экран — по видимой высоте */
+@supports (height: 100svh) {
+  @media (max-width: 950px) {
+    :root {
+      --fold: 100svh;
+    }
   }
 }

@@ -6,6 +6,12 @@
   const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
   const status = document.querySelector(".hero-status");
 
+  // ≤950 (как в hero.css): статичный первый кадр — без лупа, секвенции и распада, их файлы не грузим
+  const mobileQuery = window.matchMedia("(max-width: 950px)");
+  const MOBILE = mobileQuery.matches;
+  // режим выбирается при загрузке — при переходе через брейкпоинт (поворот планшета, ресайз окна) перезагружаемся
+  mobileQuery.addEventListener("change", () => window.location.reload());
+
   let viewW = 0;
   let viewH = 0;
   let dpr = 1;
@@ -29,7 +35,7 @@
     if (explode) explode.layout(viewW, viewH);
   }
 
-  const EX = CFG.explode || null;
+  const EX = MOBILE ? null : CFG.explode || null;
   let flash = null;
   if (EX) {
     flash = document.createElement("div");
@@ -216,6 +222,15 @@
     frames[seqStartIdx] = startFrame;
     clear();
     drawCover(startFrame, startFrame.naturalWidth, startFrame.naturalHeight, 1);
+
+    if (MOBILE) {
+      window.__heroRedraw = () => {
+        clear();
+        drawCover(startFrame, startFrame.naturalWidth, startFrame.naturalHeight, 1);
+      };
+      console.info("[hero] mobile — static first frame");
+      return;
+    }
 
     const idleVideo = await tryLoadIdleVideo(CFG.idleVideo);
 
@@ -778,4 +793,23 @@
     );
     featureVideos.forEach((video) => featureObserver.observe(video));
   }
+
+  document.querySelectorAll(".roll__label").forEach((label) => {
+    const chars = [...label.textContent.trim()];
+    label.textContent = "";
+    chars.forEach((ch, i) => {
+      if (ch === " ") {
+        label.append(Object.assign(document.createElement("span"), { className: "roll__space", textContent: " " }));
+        return;
+      }
+      const cell = document.createElement("span");
+      cell.className = "roll__char";
+      const track = document.createElement("span");
+      track.className = "roll__track";
+      track.style.setProperty("--i", i);
+      for (let k = 0; k < 2; k++) track.append(Object.assign(document.createElement("span"), { textContent: ch }));
+      cell.append(track);
+      label.append(cell);
+    });
+  });
 })();
